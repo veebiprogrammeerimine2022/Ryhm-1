@@ -1,0 +1,31 @@
+Seekord on vaja juba programmeerida.
+Tunnis tegime faili "page.php" (leiate selle ka githubist). Failis on näha, kuidas saab tingimuslauseid teha (if), massiivi pikkust teada (count) ja juhuslikku arvu genereenida (mt_rand).
+Koduse tööna on vaja täiendada osa, kus määrasime, millise osaga päevast on lehe avamisel tegemist ($part_of_day).
+Kõigepealt lähtuga argipäevast ja looge tingimused kõigi päeva osade jaoks (kuni kella 7-ni (juba olemas), siis 8-ni, siis 18-ni (juba olemas) ja edasi kuni südaööni (uneaeg) välja).
+Seejärel looge erisused argipäeva ja nädalavahetuse jaoks (usinamad võiksid laupäeva ja pühapäeva erineva teha või isegi reede).
+Selleks tuleb näiteks kogu seni loodud argipäevaste kellaaegade tingimuste osa paigutada omakorda if-lause sisse, et kui on esmaspäev kuni reede, siis vaadatakse kellaaegasid ..., järgmine tingimus, kui on laupäev või pühapäev, siis ...
+
+Midagi sellist:
+if(esmaspäev ... reede){
+	if(kuni kell 7){
+		mis siis ...
+	}
+	if(kell 7 - 8){
+		mis siis ...
+	}
+	...
+}
+if(laupäev ...={
+	mis siis ...
+}
+
+Jälgige, et kõik sulud oleksid paaris (kui alustate, siis peab ka lõpetama).
+
+Teiseks looge uus massiiv, mille sisuks on Eesti vanasõnad. Lisage sinna vähemalt 5 vanasõna aga mida rohkem ... seda uhkem.
+Lehe avamisel tuleb loosida üks neist vanasõnadest ja paigutada veebilehele pärast infot, mis osa päevast parajasti käes on.
+
+Tehtud töö tuleb järgmise tunni alguses kohe veebibrauseris nähtavale panna.
+Küsimusi saate vajadusel saata (elektronpostiga) aga kahjuks on seekord üsna kahtlane, kas saan vastata, sest nädalavahetus on mul sedakorda üsna hõivatud.
+
+Edu.ee 
+Andrus Rinde
