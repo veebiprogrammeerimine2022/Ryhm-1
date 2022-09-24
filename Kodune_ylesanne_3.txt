@@ -1,0 +1,17 @@
+Seekord on vaja täiendada tunnis loodud vormi, kuhu tekitasime <select> elemendi pildifaili valimiseks.
+
+Kuna tunnis tegime rippmenüü <select> jaoks kõigi pildifailide jaoks valikud <option> valmis, siis nüüd tuleks esimese asjana panna see tööle ehk teha nii, et kasutaja valik ka toimiks.
+Praegu toimub igal lehe laadimisel juhusliku pildi valimine. Nüüd peaks olema nii, et juhuslik pilt valitakse (igaks juhuks). PHP koodis pärast juhusliku pildi valikut tuleks aga kontrollida, kas kasutaja äkki tegi oma valiku
+see on meil ka olemas: if(isset($_POST["photo_select"]) and $_POST["photo_select"] >= 0)
+siis asendatakse eelnevalt valitud juhuslik pilt hoopis kasutaja valikuga.
+Selleks võib näiteks muutuja $photo_html saada uue väärtuse. Pisut asjalikum oleks aga juhusliku pildi loosimine ka pisut ringi teha. Terve $photo_html loomise asemel loosiks alguses lihtsalt juhusliku arvu, näiteks nii: $photo_number = mt_rand(0, count($photo_files) - 1);
+Seejärel tuleks kasutaja valiku kontroll, milles antaks (kui kasutaja valis) sellele samale muutujale $photo_number väärtuseks kasutaja valitud pildi number.
+Lõpuks (pärast kasutaja valiku kontrolli lõppu) on $photo_number kas juhuslik arv või kasutaja valitud arv ning seega saaks pildi näitamiseks html koodi (muutuja $photo_html) kokku panna (nüüd muidugi oleks seal varasemast erinevalt mt_rand jms asemel lihtsalt pildi number ehk muutuja $photo_number
+
+Lõpuks oleks vaja teha nii, et kui lehe laadimisel näidataks rippmenüüs automaatselt selle pildi nime, mis parajasti ekraanil.
+Selleks tuleks kogu see osa (tsükkel jms), mis meie valikud <option> tekitab, paigutada pärast juhusliku pildi loosimist ja kasutaja valiku kontrolli, sest seal on kindlalt teada, mis pilt ekraanile tuleb.
+<option> elemendi kokku panemise osas tsükli sees tuleb juurde lisada IF tingimus, mis kontrollib, kas parajasti loodava <option> elemendi sisuks (value ja tekst) on seesama, mis ka ekraanile panemiseks määratud ($photo_number). Kui on, siis tuleb <option> elemendi algusmärgendisse lisada atribuut selected.
+Ehk siis muidu on näiteks: <option value="0">tln_1.JPG</option>
+Aga, kui on pilt, mis ka ekraanil, siis: <option value="0" selected>tln_1.JPG</option>
+
+Tunnis näeme!
