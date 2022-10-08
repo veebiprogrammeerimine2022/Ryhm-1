@@ -1,0 +1,33 @@
+Seekord on meie tundides tehtud tööd vaja täiustada nii, et tekiks algeline sisselogimine.
+
+Tunnis tegime valmis algse variandi kasutaja loomisest ehk kasutaja andmete salvestamisest andmebaasi.
+Sisselogimiseks on vaja:
+
+1) Lisage meie page.php lehele (näiteks kohe pärast teadet, et leht on õppetöö raames loodud) veel üks uus vorm, milles on väljad kasutajatunnuse (e-mail) ja salasõna (password) sisestamiseks ning submit nupp. Põhimõtteliselt saate selle vormi osad kopeerida uue kasutaja loomise vormist.
+
+2) Kui veebilehe kasutaja on sisestanud e-maili (kasutajatunnus) ning salasõna, siis tuleb luua andmebaasiühendus ning lugeda kasutajate andmetabelist sellise kasutaja andmeid, kelle e-maili aadress sai just sisestatud. Kui selline leitakse, siis tuleb kontrollida, kas sisestatud salasõna klapib andmetabelis oleva räsiga (hash ehk krüpteeritud salasõna).
+
+SQL lause, millega kasutaja andmeid lugeda on selline: "SELECT password FROM vp_users WHERE email = ?"
+Panete tähele, kõiki andmeid polegi kohe ju vaja, piisab, kui loete kasutaja salasõna.
+Ja mis olulisem - siin lauses loetakse andmeid, mis peavad mingile tingimusele vastama (e-mail peab olema kindla väärtusega). Seega on selle käsu puhul vaja nii bind_param käsku (mida kasutate tavaliselt andmete saatmisel andmebaasi), sest see email jaoks mõeldud ? tuleb ju õigete andmetega siduda. Ja siis kasutate käsku bind_result loetava salasõna hoidmiseks.
+
+Kontrollimaks, kas selline kasutaja üldse leiti, tuleb $stmt->fetch() paigutada if tingimuslausesse: if($stmt->fetch())
+Kuna sellise e-mailiga kasutajaid peaks saama olla vaid üks, siis on loota vaid ühte võimalikku vastet.
+
+Kui selline kasutaja leiti, siis tuleb kontrollida, kas salasõna on korrektne: if(password_verify($password, $password_from_db))
+Siin muutuja $password on selle salasõna jaoks, mille kasutaja just sisselogimiseks vormi sisestas (ehk siis algselt $_POST["password_input"] ) ja $password_from_db on muutuja, mis hoiab just andmetabelist saadud salasõna.
+
+Kui kõik on õige, siis tuleks kohe sulgeda nii käsk kui ka andmebaasiühendus ja sisselogimise tulemuseks/tunnuseks minna automaatselt ühele uuele lehele home.php
+Selleks oleks kohe pärast andmebaasiühenduse sulgemist vaja anda käsk: header("Location: home.php");
+
+Kui kasutajat ei leitud või salasõna oli vale, siis mõlemal juhul võiks mingit veateadet näidata - "sisselogimise ebaõnnestus, kasutajatunnus või salasõna oli ebakorrektne!".
+
+Nüüd on veel vaja luua see puudu olev leht "home.php".
+Tehke kasvõi koopia page.php failist aga kustutage algusest kogu olemasolev php kood ning allpool jätke ka alles vaid lehe alguse bänner, pealkiri ja see lause, mis hoiatab, et leht on õppetöö raames loodud.
+
+Ongi kõik!
+
+Kui seekord kellelgi töö tegemata jääb, siis tuleb tunni alguses kiiresti minu githubist kood kopeerida (lisan selle sinna enne tunni algust), sest tunnis on meil vaja, et sisselogimine oleks olemas.
+
+Edu.ee
+Andrus Rinde
