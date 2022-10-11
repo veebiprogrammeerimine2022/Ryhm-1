@@ -1,14 +1,21 @@
-<!DOCTYPE html>
-<html lang="et">
-<head>
-	<meta charset="utf-8">
-	<title>Andrus Rinde programmeerib veebi</title>
-</head>
-<body>
-<img src="pics/vp_banner_gs.png" alt="bänner">
-<h1>Vinge veebisüsteem</h1>
-<p>See leht on loodud õppetöö raames ja ei sisalda tõsiseltvõetavat sisu!</p>
-<p>Õppetöö toimus <a href="https://www.tlu.ee" target="_blank">Tallinna Ülikoolis</a> Digitehnoloogiate instituudis.</p>
-<hr>
-</body>
-</html>
+<?php
+	session_start();
+	if(!isset($_SESSION["user_id"])){
+		//jõuga viiakse page.php lehele
+		header("Location: page.php");
+		exit();
+	}
+	
+	//logime välja
+	if(isset($_GET["logout"])){
+		session_destroy();
+		header("Location: page.php");
+		exit();
+	}
+	
+	require_once "header.php";
+?>
+<ul>
+	<li>Logi <a href="?logout=1">välja</a></li>
+</ul>
+<?php require_once "footer.php"; ?>

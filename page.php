@@ -1,6 +1,8 @@
 <?php
+	//algatan sessiooni
+	session_start();
 	//loen sisse konfiguratsioonifaili
-	require_once "../../../config_vp2022.php";
+	require_once "fnc_user.php";
 	//echo $server_user_name;
 	
 	$author_name = "Andrus Rinde";
@@ -180,30 +182,7 @@
 	
 	$login_error = null;
 	if(isset($_POST["login_submit"])){
-        $conn = new mysqli($server_host, $server_user_name, $server_password, $database);
-		$conn->set_charset("utf8");
-		$stmt = $conn->prepare("SELECT password FROM vp_users_1 WHERE email = ?");
-        echo $conn->error;
-        $stmt->bind_param("s", $_POST["email_input"]);
-        $stmt->bind_result($password_from_db);
-        $stmt->execute();
-        if($stmt->fetch()){
-            //kasutaja on olemas, parool tuli ...
-            if(password_verify($_POST["password_input"], $password_from_db)){
-                //parool õige, oleme sees!
-                $stmt->close();
-                $conn->close();
-                header("Location: home.php");
-                //exit();
-            } else {
-                $login_error = "Kasutajatunnus või salasõna oli vale!";
-            }
-        } else {
-            $login_error = "Kasutajatunnus või salasõna oli vale!";
-        }
-        
-        $stmt->close();
-        $conn->close();
+        $login_error = sign_in($_POST["email_input"], $_POST["password_input"]);
     }
 ?>
 <!DOCTYPE html>
@@ -224,6 +203,7 @@
 		<input type="password" name="password_input" placeholder="salasõna">
 		<input type="submit" name="login_submit" value="Logi sisse"><span><strong><?php echo $login_error; ?></strong></span>
 	</form>
+	<p><a href="add_user.php">Loo omale kasutaja</a></p>
 	<hr>
 	<p>Lehe avamise hetk: <?php echo $weekday_names_et[$weekday_now - 1] .", " .$full_time_now; ?>.</p>
 	<p>Praegu on <?php echo $part_of_day; ?>.</p>
@@ -261,7 +241,7 @@
 		</select>
 		<input type="submit" id="photo_submit" name="photo_submit" value="OK">
 	</form>
-	<?php echo $photo_html; ?>
-	<hr>
-</body>
-</html>
+	<?php
+		echo $photo_html;
+		require_once "footer.php";
+	?>
