@@ -1,0 +1,18 @@
+Kuuenda kodutööna on vaja jätkata kasutajate sisselogimisega seotud tööd.
+
+Täiendage oma varasemalt loodud filmide andmetabelisse lisamise ja filmide nimekirja vaatamise lehti selliselt, et ka nende nägemiseks oleks vaja sisse logida.
+Lisage lehele home.php väljalogimise lingi järele ka lingid neile lehtedele pääsemiseks.
+Väljalogimise osa palun lisada kõigile lehtedele!
+
+Sisselogimise funktsiooni palun muutke nii, et kõigepealt loetaks andmetabelist vaid salasõna (tunnis lisasime praegu ka id, see tuleks algul ära jätta).
+Kui salasõna on õige, logitakse sisse, siis tuleks äsja kasutatud SQL käsk sulgeda ( $stmt->close(); ) ja teha uus, mis loeb sisse nii kasutaja id, eesnime kui ka perekonnanime: "SELECT id, firstname, lastname FROM vp_users WHERE email = ?"
+
+Need andmed tuleks kõik sessioonimuutujatesse salvestada ($_SESSION["user_id"], $_SESSION["firstname"], $_SESSION["lastname"],).
+
+Sisselogimise järel peaks home.php lehel olema näha tekst: "Sisse logitud: eesnimi perekonnanimi".
+
+Uue kasutaja loomit tuleks täiendada kontrolliga, ega sellise e-mailiga kasutajat juba olemas pole.
+Selleks tuleb kõigepealt hoopis andmetabelist püüda lugeda mingisuguseid andmeid, mille puhul oleks kasutajal just selline e-mail. Saab kasutada samasugust SQL käsku nagu sisselogimisel, näiteks: "SELECT id FROM vp_users WHERE email = ?"
+Kui nüüd selline kasutaja leitakse ( kasutate tingimust if($stmt->fetch() ) siis tuleb anda veateade, et kasutaja on olemas. Kui aega ei leita, siis seni kasutatud SQL käsk sulgeda ja teha uus, mis andmed salvestab ehk kasutaja loob.
+
+
