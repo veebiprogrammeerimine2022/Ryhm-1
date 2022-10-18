@@ -100,7 +100,7 @@
 				$notice = sign_up($first_name, $last_name, $birth_date, $gender, $email, $_POST["password_input"]);
 				if($notice == 1){
 					$notice = "Uus kasutaja edukalt loodud!";
-					$notice = null;
+					//$notice = null;
 					$first_name = null;
 					$last_name = null;
 					$email = null;
@@ -110,7 +110,11 @@
 					$birth_day = null;
 					$birth_date = null;
 				} else {
-					$notice = "Uue kasutaja loomisel tekkis tõrge!";
+					if($notice == 2){
+						$notice = "Selline kasutaja on juba olemas!";
+					} else {
+						$notice = "Uue kasutaja loomisel tekkis tõrge!";
+					}
 				}
 			}
 		}//if submit lõppeb	
