@@ -19,5 +19,6 @@
 ?>
 <ul>
 	<li>Logi <a href="?logout=1">välja</a></li>
+	<li>Fotode galeriisse <a href="gallery_photo_upload.php">lisamine</a></li>
 </ul>
 <?php require_once "footer.php"; ?>
