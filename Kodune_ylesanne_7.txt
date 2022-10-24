@@ -1,0 +1,36 @@
+Seekord on töö natuke ehk mahukam aga suures osas ju kordamine.
+
+Täiendage meie tundides loodud piltide üleslaadimise lehe funktsionaalsust nii, et saaks ka pisipildid (thumbnails) luua. Nende mõõdud peaksid olema 100X100 pikslit ehk siis ruudud.
+Selleks on vaja täiendada pildi suuruse muutmise funktsiooni nii, et saaks ka pildist ruudukujulise osa lõigata ning siis väiksemaks teha. Teise variandina võib teha täitsa uue funktsiooni.
+
+Siis saab gallery_photo_upload.php failis juba normaalmõõdus pildi loomiseks tehtud ajutisest image objektist $temp_image saaks teha ka pisipildi.
+
+Pildi suuruse muutmisel kasutasime php funktsiooni imagecopyresampled, mille kohta leiate infot:
+https://www.php.net/manual/en/function.imagecopyresampled.php
+
+Lisasin ka ühe pildi (imagecopyresample.png), mis võiks aidata selle imagecopyresampled funktsiooni 10 parameetrit mõista.
+
+Kui pildist on normaalmõõdus, pisipilt ja ka originaalfail salvestatud, siis tuleks pildi andmed ka andmebaasi salvestada. Tabeli saab luua SQL käsuga, milles andmebaasi nimi tuleb oma määrata!
+
+CREATE TABLE `andmebaasinimi`.`vp_photos` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `userid` INT(11) NOT NULL , `filename` VARCHAR(40) NOT NULL , `created` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `alttext` VARCHAR(256) NULL , `privacy` INT(1) NOT NULL , `deleted` DATE NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+NB! Siin on vaja ka pildi üles laadinud kasutaja id (userid), mille saate sessioonimuutujast! Selle abil saab siduda pildi ja kasutaja nime.
+
+Soovitan pildi andmed andmebaasi salvestada ainult siis, kui pisipildi ja normaalpildi salvestamine on õnnestunud ning originaalpilt ka edukalt ümber tõestetud. Selleks peaks funktsioonis save_photo vastavad tegevused ( imagejpeg($image, $target, 95);  imagepng($image, $target, 6);   imagegif($image, $target);  ) ja ka move_uploaded_file paigutama if tingimuse sisse ja kontrollima, kas on tõene.
+
+
+Kui pildid kenasti andmebaasi talletatakse, siis saab luua uue lehe (soovitan failinimeks gallery_public.php), mis toob ekraanile kõik pildid, mille privacy on avalik või sisseloginud kasutajatele ning, mis pole kustutatud.
+Vajalik SQL käsk on: "SELECT filename, alttext FROM vp_photos WHERE privacy >= ? AND deleted IS NULL"
+
+Iga pildi näitamiseks on vaja img elementi kujul: 
+<img src="pildi url" alt="alteranatiivtekst">
+Pildi url peab siin olema kataloog, kust pildifaili loete ja pildifaili nimi.
+Alt teksti lubame andmetabelis ka tühjaks jätta aga pildil veebis peab see olema. Seega, kui andmebaasist alt teksti ei tule (see on tühi), siis lisage programmis automaatselt näiteks tekst "galeriipilt".
+
+Soovitan püüda iga pildi juurde lugeda ka selle omaniku (kasutaja, kes pildi üles laadis. Selleks kasutage andmebaaside kursuse teadmisi JOIN käskudest.
+
+Kuna kataloogide nimed (kuhu pildifailid laetakse) on nii piltide salvestamisel kui ka lugemisel/näitamisel samad, siis võiks ka nende nimed panna muutujate väärtusteks ning need muutujad kirjutada config faili. Vaadakse iis oma programmikood üle ja kõikjal, kus katalooge mainitud, kasutage muutujaid.
+
+Pingutage veel veidi! Lisage piltide üleslaadimine ka filmide andmebaasi! See tuleks siis lahendada koos isiku lisamisega andmebaasi. Saate ju kontrollida, kas pilt oli valitud, kui on, salvestate serverisse ja nime kirjutate andmetabelisse. Kui pilti pole valitud ... jääb vastav koht andmetabelis tühjaks.
+
+Edu.ee!
