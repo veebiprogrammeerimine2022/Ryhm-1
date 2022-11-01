@@ -1,0 +1,100 @@
+			Galeriipiltide lugemise SQL
+			SELECT vp_photos.filename, vp_photos.alttext, vp_users.firstname, vp_users.lastname FROM vp_photos JOIN vp_users ON vp_photos.userid = vp_users.id WHERE vp_photos.privacy >= ? AND vp_photos.deleted IS NULL GROUP BY vp_photos.id
+
+_____________________________________________________________________________________________
+			
+			HTML koodi tekitamine
+			
+			/* <div class="thumbgallery">
+				<img src="gallery_upload_thumb/vp_16547740769294.jpg" alt="Toores punane sõstar" class="thumbs">
+				<p>Andrus Rinde</p> 
+			</div> */
+			
+            $photo_html .= '<div class="thumbgallery">' ."\n";
+            $photo_html .= '<img src="' .$GLOBALS["gallery_photo_thumb_folder"] .$filename_from_db .'" alt="';
+            if(empty($alttext_from_db)){
+                $photo_html .= "Üleslaetud foto";
+            } else {
+                $photo_html .= $alttext_from_db;
+            }
+            $photo_html .= '" class="thumbs">' ."\n";
+            $photo_html .= "<p>" .$firstname_from_db ." " .$lastname_from_db ."</p> \n";
+            $photo_html .= "</div> \n";
+			
+_____________________________________________________________________________________________			
+			
+			Lehtedeks jaotatud galerii lingid
+			
+			<?php
+				//Eelmine leht | Järgmine leht
+				//<span>Eelmine leht</span> | <span><a href="?page=2">Järgmine leht</a></span>
+				if($page > 1){
+					echo '<span><a href="?page=' .($page - 1) .'">Eelmine leht</a></span>';
+				} else {
+					echo "<span>Eelmine leht</span>";
+				}
+				echo " | ";
+				if($page * $limit < $photo_count){
+					echo '<span><a href="?page=' .($page + 1) .'">Järgmine leht</a></span>';
+				} else {
+					echo "<span>Järgmine leht</span>";
+				}
+			?>
+			
+_____________________________________________________________________________________________			
+			
+			gallery.css
+			
+.gallery
+{
+	width: 80%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.gallerythumb
+{
+	width: 110px;
+	height: 200px;
+	padding: 15px;
+	margin: 15px;
+	font-size: .1rem
+}
+
+.thumbs
+{
+    border-radius: 5px;
+    cursor: pointer;
+	opacity: 0.7;
+	transform-origin: 50% 50%;
+    transition: 0.3s;
+	filter: blur(1px);
+}
+
+.thumbs:hover
+{	
+	opacity: 1;
+	filter: none;
+	transform: scale(1.05);
+}
+
+
+_____________________________________________________________________________________________
+
+    function count_photos($privacy){
+        $photo_count = 0;
+        $conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+        $stmt = $conn->prepare("SELECT COUNT(id) FROM vp_photos WHERE privacy >= ? AND deleted IS NULL");
+        echo $conn->error;
+        $stmt->bind_param("i", $privacy);
+        $stmt->bind_result($count_from_db);
+        $stmt->execute();
+        if($stmt->fetch()){
+            $photo_count = $count_from_db;
+        }
+        $stmt->close();
+		$conn->close();
+		return $photo_count;
+    }

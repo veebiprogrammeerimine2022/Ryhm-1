@@ -1,0 +1,8 @@
+	$gallery_photo_thumbnail_folder = "photo_upload_thumbnail/";
+	$gallery_photo_normal_folder = "photo_upload_normal/";
+	$gallery_photo_original_folder = "photo_upload_original/";
+	$photo_file_size_limit = 1.5 * 1024 * 1024;
+	$normal_photo_max_w = 800;
+	$normal_photo_max_h = 450;
+	$thumbnail_photo_w = $thumbnail_photo_h = 100;
+	$photo_name_prefix = "vp_";

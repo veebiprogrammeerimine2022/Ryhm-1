@@ -37,35 +37,26 @@ function create_image($file, $file_type){
 	return $temp_image;
 }
 
-function resize_photo($temp_photo, $w, $h, $keep_orig_proportion = true){
-	$image_w = imagesx($temp_photo);
-	$image_h = imagesy($temp_photo);
-	$new_w = $w;
-	$new_h = $h;
-	//uued muutujad, mis on seotud proportsioonide muutmisega, kärpimisega (crop)
-	$cut_x = 0;
-	$cut_y = 0;
-	$cut_size_w = $image_w;
-	$cut_size_h = $image_h;
-	
-	
-	if ($keep_orig_proportion){//säilitan originaalproportsioonid
-		if($image_w / $w > $image_h / $h){
-			$new_h = round($image_h / ($image_w / $w));
-		} else {
-			$new_w = round($image_w / ($image_h / $h));
-		}
-	} else { //kui on vaja kindlat suurust, kärpimist
+	function resize_photo($temp_photo, $w, $h, $keep_orig_proportion = true){
+		$image_w = imagesx($temp_photo);
+		$image_h = imagesy($temp_photo);
+		$new_w = $w;
+		$new_h = $h;
+		//uued muutujad, mis on seotud proportsioonide muutmisega, kärpimisega (crop)
+		$cut_x = 0;
+		$cut_y = 0;
+		$cut_size_w = $image_w;
+		$cut_size_h = $image_h;
 		
-		if($w == $h){ //ruudukujuline
-			if($image_w > $image_h){
-				$cut_size_w = $image_h;
-				$cut_x = round(($image_w - $cut_size_w) / 2);
+		
+		if ($keep_orig_proportion){//säilitan originaalproportsioonid
+			if($image_w / $w > $image_h / $h){
+				$new_h = round($image_h / ($image_w / $w));
 			} else {
-				$cut_size_h = $image_w;
-				$cut_y = round(($image_h - $cut_size_h) / 2);
+				$new_w = round($image_w / ($image_h / $h));
 			}
-		} else {
+		} else { //kui on vaja kindlat suurust, kärpimist
+
 			if($image_w > $image_h){
 				$cut_size_w = $image_h;
 				$cut_x = round(($image_w - $cut_size_w) / 2);
@@ -74,17 +65,16 @@ function resize_photo($temp_photo, $w, $h, $keep_orig_proportion = true){
 				$cut_y = round(($image_h - $cut_size_h) / 2);
 			}
 		}
+		
+		$temp_image = imagecreatetruecolor($new_w, $new_h);
+		//säilitame vajadusel läbipaistvuse (png ja gif piltide jaoks
+        imagesavealpha($temp_image, true);
+        $trans_color = imagecolorallocatealpha($temp_image, 0, 0, 0, 127);
+        imagefill($temp_image, 0, 0, $trans_color);
+		//teeme originaalist väiksele koopia
+		imagecopyresampled($temp_image, $temp_photo, 0, 0, $cut_x, $cut_y, $new_w, $new_h, $cut_size_w, $cut_size_h);
+		return $temp_image;
 	}
-	
-	$temp_image = imagecreatetruecolor($new_w, $new_h);
-	//säilitame vajadusel läbipaistvuse (png ja gif piltide jaoks
-	imagesavealpha($temp_image, true);
-	$trans_color = imagecolorallocatealpha($temp_image, 0, 0, 0, 127);
-	imagefill($temp_image, 0, 0, $trans_color);
-	//teeme originaalist väiksele koopia
-	imagecopyresampled($temp_image, $temp_photo, 0, 0, $cut_x, $cut_y, $new_w, $new_h, $cut_size_w, $cut_size_h);
-	return $temp_image;
-}
 
 /* function resize_photo($temp_photo, $normal_photo_max_w, $normal_photo_max_h){
 	//originaalpildi suurus
