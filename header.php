@@ -3,6 +3,12 @@
 <head>
 	<meta charset="utf-8">
 	<title>Andrus Rinde programmeerib veebi</title>
+	<?php
+		if(isset($style_sheets)){
+			//<link rel="stylesheet" href="styles/gallery.css">
+			echo '<link rel="stylesheet" href="' .$style_sheets .'">' ."\n";
+		}
+	?>
 </head>
 <body>
 <img src="pics/vp_banner_gs.png" alt="bänner">
