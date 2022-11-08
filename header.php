@@ -4,9 +4,11 @@
 	<meta charset="utf-8">
 	<title>Andrus Rinde programmeerib veebi</title>
 	<?php
-		if(isset($style_sheets)){
+		if(isset($style_sheets) and !empty($style_sheets)){
 			//<link rel="stylesheet" href="styles/gallery.css">
-			echo '<link rel="stylesheet" href="' .$style_sheets .'">' ."\n";
+			foreach($style_sheets as $style){
+				echo '<link rel="stylesheet" href="' .$style .'">' ."\n";
+			}
 		}
 	?>
 </head>
