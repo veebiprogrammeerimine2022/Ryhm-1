@@ -68,7 +68,7 @@
 <ul>
 	<li>Logi <a href="?logout=1">välja</a></li>
 	<li>Tagasi <a href="home.php">avalehele</a></li>
-	
+	<li>Tagasi <a href="<?php echo "gallery_own.php?page=" .$_SESSION["gallery_own_page"]; ?>">oma fotode galeriisse</a></li>
 </ul>
 	<hr>
 	<h2>Foto andmete muutmine</h2>

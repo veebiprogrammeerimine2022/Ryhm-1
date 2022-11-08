@@ -27,6 +27,8 @@
 		$page = $_GET["page"];
 	}
 	
+	$_SESSION["gallery_own_page"] = $page;
+	
 	$style_sheets = ["styles/gallery.css"];
 	require_once "header.php";
 	
