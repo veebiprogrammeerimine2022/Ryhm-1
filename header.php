@@ -3,6 +3,12 @@
 <head>
 	<meta charset="utf-8">
 	<title>Andrus Rinde programmeerib veebi</title>
+	<style>
+		body {
+			background-color: <?php echo $_SESSION["user_bg_color"]; ?>;
+			color: <?php echo $_SESSION["user_txt_color"]; ?>
+		}
+	</style>
 	<?php
 		if(isset($style_sheets) and !empty($style_sheets)){
 			//<link rel="stylesheet" href="styles/gallery.css">

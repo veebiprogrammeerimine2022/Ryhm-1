@@ -25,6 +25,12 @@
 					$_SESSION["user_id"] = $id_from_db;
 					$_SESSION["firstname"] = $firstname_from_db;
 					$_SESSION["lastname"] = $lastname_from_db;
+					
+					//määrame värvid
+					$_SESSION["user_bg_color"] = "#DDDDDD";
+					$_SESSION["user_txt_color"] = "#000099";
+					//värvide profiilist lugemine, kui on, tulevad uued väärtused. kui pole, jäävad need, mis otse kirjas
+					
 					$stmt->close();
 					$conn->close();
 					header("Location: home.php");
