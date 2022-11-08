@@ -1,0 +1,28 @@
+Seekord on vaja täiendada tunnis alustatud foto andmete muutmise lehte.
+
+1) Lugesime tunnis valitud foto andmed edit_photo_data.php lehel vormi. Kasutaja saab neid muuta. Kui klõpsatakse "Muuda" nupul, siis tuleb andmed vormist (mida kasutaja ehk muutis) andmetabelisse salvestada ehk muuta valitud pildi andmeid andmetabelis.
+
+Vormist saate POST meetodil kätte nii alt teksti, kui ka valitud foto id (see hidden tüüpi input).
+Lisage funktsioonide faili funktsioon, mis selle andmete muutmise ära teeb.
+SQL lause, mida vaja:
+UPDATE vp_photos SET alttext = ?, privacy = ? WHERE id = ?
+
+2) Lisage võimalus foto kustutamiseks. Selleks võiksite lisada lehele veel ühe vormi, milles on seesama hidden tüüpi input, et foto id ka POST meetodiga serverile saadetaks. Lisaks sellele piisab tegelikult veel vaid submit tüüpi nupu lisamisest Mina paneks selle nimeks (atribuut name) näiteks photo_delete_submit.
+Kui seda nuppu klõpsatakse, siis tulebki foto kustutada ehk tegelikult tuleb andmetabelis andmeid muuta ja valitud foto deleted välja väärtuseks panna kustutamise kuupäev. Kuupäeva paneb andmebaas ise funktsiooniga now().
+Vajalik SQL lause:
+UPDATE vp_photos SET deleted = now() WHERE id = ?
+
+3)Muutmiseks valitud foto andmete lugemisel lehele, andmete muutmisel (ka kustutamisel) peaks tegelikult ka kontrollima, kas foto on ikka parajasti sisseloginud kasutaja oma ehk tal on õigus seda teha.
+Enne andmete lugemist või muutmist tuleks eelnevalt teha kontrolliv päring, kas valitud foto andmetes userid on sama, mis sisseloginud kasutaja id (mis on sessioonimuutujas $_SESSION["user_id"] ).
+Vajalik SQL:
+SELECT userid FROM vp_photos WHERE id = ?
+Kui tuleb vaste (selline foto on olemas), siis tuleb kontrollida, kas andmetabelist saadud userid on sama, mis sessioonimuutujas. Kui ei, siis tuleks kasutaja viia tagasi lehele, kus on kasutaja enda fotod (gallery_own.php). See toimuks samamoodi, nagu sisselogimisel ja väljalogimisel.
+
+4) Lisasime pildigaleriide jaoks kujunduse css failiga. Et vajalik link veebilehele lisataks, võtsime kasutusele muutuja $style_sheets ja selle olemasolul lisatakse header.php failis vajalik link.
+Muutke kujunduse lisamist nii, et saaks lisada mitu css faili (iga faili jaoks on vaja eraldi <link> elementi.
+Mina muudaksin muutuja $style_sheets massiiviks ja paneks vajalikud css failid massiivi elementidena kirja.
+Näiteks praegu: $style_sheets = ["style/gallery.css"];
+Kui oleks juba mitu, siis näiteks: $style_sheets = ["style/gallery.css", "style/another.css"];
+
+header.php failis tuleks nüüd teha muudatus, et oleks tsükkel, mis teeb selle massiivi iga elemendi jaoks <link> elemendi.
+Eeskujuks saate võtta kasvõi kunagise kataloogist loetud failide nimekirja alusel fotode näitamise vms.
