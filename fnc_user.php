@@ -30,6 +30,21 @@
 					$_SESSION["user_bg_color"] = "#DDDDDD";
 					$_SESSION["user_txt_color"] = "#000099";
 					//värvide profiilist lugemine, kui on, tulevad uued väärtused. kui pole, jäävad need, mis otse kirjas
+					//=================================================
+					$stmt->close();
+					$stmt = $conn->prepare("SELECT bgcolor, txtcolor FROM vp_userprofiles_1 WHERE userid = ?");
+					$stmt->bind_param("i", $_SESSION["user_id"]);
+					$stmt->bind_result($bg_color_from_db, $txt_color_from_db);
+					$stmt->execute();
+					if($stmt->fetch()){
+						if(!empty($txt_color_from_db)){
+							$_SESSION["user_txt_color"] = $txt_color_from_db;
+						}
+						if(!empty($bg_color_from_db)){
+							$_SESSION["user_bg_color"] = $bg_color_from_db;
+						}
+					}
+					//=================================================
 					
 					$stmt->close();
 					$conn->close();
@@ -76,6 +91,60 @@
 			}
 		}
 		//echo $stmt->error;
+		$stmt->close();
+		$conn->close();
+		return $notice;
+	}
+	
+	function read_user_description(){
+		//kui profiil on olemas, loeb kasutaja lühitutvustuse
+		$description = null;
+		$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+		//vaatame, kas on profiil olemas
+		$stmt = $conn->prepare("SELECT description FROM vp_userprofiles_1 WHERE userid = ?");
+		echo $conn->error;
+		$stmt->bind_param("i", $_SESSION["user_id"]);
+		$stmt->bind_result($description_from_db);
+		$stmt->execute();
+		if($stmt->fetch()){
+			$description = $description_from_db;
+		}
+		$stmt->close();
+		$conn->close();
+		return $description;
+	}
+	
+	function store_user_profile($description, $bg_color, $txt_color){
+		$notice = null;
+		$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+		//vaatame, kas on profiil olemas
+		$stmt = $conn->prepare("SELECT id FROM vp_userprofiles_1 WHERE userid = ?");
+		echo $conn->error;
+		$stmt->bind_param("i", $_SESSION["user_id"]);
+		$stmt->bind_result($id_from_db);
+		$stmt->execute();
+		if($stmt->fetch()){
+			$stmt->close();
+			//uuendame profiili
+			$stmt= $conn->prepare("UPDATE vp_userprofiles_1 SET description = ?, bgcolor = ?, txtcolor = ? WHERE userid = ?");
+			echo $conn->error;
+			$stmt->bind_param("sssi", $description, $bg_color, $txt_color, $_SESSION["user_id"]);
+		} else {
+			$stmt->close();
+			//tekitame uue profiili
+			$stmt = $conn->prepare("INSERT INTO vp_userprofiles_1 (userid, description, bgcolor, txtcolor) VALUES(?,?,?,?)");
+			echo $conn->error;
+			$stmt->bind_param("isss", $_SESSION["user_id"], $description, $bg_color, $txt_color);
+		}
+		if($stmt->execute()){
+			$_SESSION["user_bg_color"] = $bg_color;
+			$_SESSION["user_txt_color"] = $txt_color;
+			$notice = "Profiil salvestatud!";
+		} else {
+			$notice = "Profiili salvestamisel tekkis viga: " .$stmt->error;
+		}
 		$stmt->close();
 		$conn->close();
 		return $notice;
