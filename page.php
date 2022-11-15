@@ -5,6 +5,15 @@
 	require_once "fnc_user.php";
 	require_once "fnc_gallery.php";
 	//echo $server_user_name;
+	//klass
+	/* require_once "classes/Example.class.php";
+	$our_example = new Example(3);
+	$my_example = new Example(5);
+	echo $our_example->known_value ."<br>";
+	$my_example->add();
+	unset($our_example);
+	unset($my_example); */
+	//echo $our_example->known_value ."<br>";
 	
 	$author_name = "Andrus Rinde";
 	//echo $author_name;

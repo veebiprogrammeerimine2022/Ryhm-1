@@ -1,6 +1,7 @@
 <?php
 require_once "../../../config_vp2022.php";
-	
+
+//klassi
 function check_file_type($file){
 	$file_type = 0;
 	$image_check = getimagesize($file);
@@ -23,21 +24,23 @@ function create_filename($photo_name_prefix, $file_type){
 	return $photo_name_prefix .$timestamp ."." .$file_type;
 }
 
-function create_image($file, $file_type){
-	$temp_image = null;
-	if($file_type == "jpg"){
-		$temp_image = imagecreatefromjpeg($file);
-	}
-	if($file_type == "png"){
-		$temp_image = imagecreatefrompng($file);
-	}
-	if($file_type == "gif"){
-		$temp_image = imagecreatefromgif($file);
-	}
-	return $temp_image;
-}
-
-	function resize_photo($temp_photo, $w, $h, $keep_orig_proportion = true){
+//klassi
+/* 	function create_image($file, $file_type){
+		$temp_image = null;
+		if($file_type == "jpg"){
+			$temp_image = imagecreatefromjpeg($file);
+		}
+		if($file_type == "png"){
+			$temp_image = imagecreatefrompng($file);
+		}
+		if($file_type == "gif"){
+			$temp_image = imagecreatefromgif($file);
+		}
+		return $temp_image;
+	} */
+	
+	//klassi
+	/* function resize_photo($temp_photo, $w, $h, $keep_orig_proportion = true){
 		$image_w = imagesx($temp_photo);
 		$image_h = imagesy($temp_photo);
 		$new_w = $w;
@@ -74,7 +77,7 @@ function create_image($file, $file_type){
 		//teeme originaalist väiksele koopia
 		imagecopyresampled($temp_image, $temp_photo, 0, 0, $cut_x, $cut_y, $new_w, $new_h, $cut_size_w, $cut_size_h);
 		return $temp_image;
-	}
+	} */
 
 /* function resize_photo($temp_photo, $normal_photo_max_w, $normal_photo_max_h){
 	//originaalpildi suurus
@@ -94,7 +97,8 @@ function create_image($file, $file_type){
 	return $temp_image;
 } */
 
-function save_photo($image, $target, $file_type){
+//klassi
+/* function save_photo($image, $target, $file_type){
 	$error = null;
 	if($file_type == "jpg"){
 		if(imagejpeg($image, $target, 95) == false){
@@ -112,7 +116,7 @@ function save_photo($image, $target, $file_type){
 		}
 	}
 	return $error;
-}
+} */
 
 function store_photo_data($file_name, $alt, $privacy){
 	$notice = null;
