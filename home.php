@@ -1,5 +1,8 @@
 <?php
-	session_start();
+	//session_start();
+	require_once "classes/SessionManager.class.php";
+	SessionManager::sessionStart("vp", 0, "~rinde/vp_2022/Ryhm-1/", "greeny.cs.tlu.ee");
+	
 	if(!isset($_SESSION["user_id"])){
 		//jõuga viiakse page.php lehele
 		header("Location: page.php");
@@ -24,6 +27,7 @@
 	//nimi, väärtus, aegumistähtaeg, veebikataloog, domeen, https kasutamine,
 	//https      isset($_SERVER["HTTPS"])
 	setcookie("lastvisitor", $_SESSION["firstname"] ." " .$_SESSION["lastname"],time() + (60 * 60 * 24 * 8), "~rinde/vp_2022/Ryhm-1/", "greeny.cs.tlu.ee", true, true);
+	//küpsise kustutamine: expire ehk aegumistähtaeg pannakse minevikus:   time() - 3000
 	
 	require_once "header.php";
 	
