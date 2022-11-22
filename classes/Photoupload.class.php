@@ -4,14 +4,12 @@
 		public $file_type; //alguses saadame selle siia parameetrina, hiljem teeb klass selle ise kindlaks
 		private $temp_photo; //originaalmõõdus pikslikogum, image objekt
 		private $new_temp_photo;
+		public $file_name = null;
 		public $error = null;
 		
 		function __construct($photo){
 			$this->photo_to_upload = $photo;
-			//$this->file_type = $type;
 			$this->check_file_type();
-			//nüüd tuleks tegelikult veel kontrollida, kas pildifail on lubatud tüüpi (jpg, png, gif)
-			
 			if(empty($this->error)){
 				$this->temp_photo = $this->create_image($this->photo_to_upload["tmp_name"], $this->file_type);
 			}
@@ -23,16 +21,21 @@
 		}
 		
 		private function check_file_type(){
+			$allowed_file_types = ["image/jpeg", "image/png", "image/gif"];
 			$image_check = getimagesize($this->photo_to_upload["tmp_name"]);
 			if($image_check !== false){
-				if($image_check["mime"] == "image/jpeg"){
-					$this->file_type = "jpg";
-				}
-				if($image_check["mime"] == "image/png"){
-					$this->file_type = "png";
-				}
-				if($image_check["mime"] == "image/gif"){
-					$this->file_type = "gif";
+				if(in_array($image_check["mime"], $allowed_file_types)){
+					if($image_check["mime"] == "image/jpeg"){
+						$this->file_type = "jpg";
+					}
+					if($image_check["mime"] == "image/png"){
+						$this->file_type = "png";
+					}
+					if($image_check["mime"] == "image/gif"){
+						$this->file_type = "gif";
+					}
+				} else {
+					$this->error = "Valitud fail pole lubatud tüüpi!";
 				}
 			} else {
 				$this->error = "Valitud fail pole pilt!";
@@ -51,6 +54,17 @@
 				$temp_image = imagecreatefromgif($file);
 			}
 			return $temp_image;
+		}
+		
+		public function check_file_size($limit){
+			if($this->photo_to_upload["size"] > $limit){
+				$this->error = "Valitud fail on liiga suur!";
+			}
+		}
+		
+		public function create_filename($photo_name_prefix){
+			$timestamp = microtime(1) * 10000;
+			$this->file_name = $photo_name_prefix .$timestamp ."." .$this->file_type;
 		}
 		
 		public function resize_photo($w, $h, $keep_orig_proportion = true){
@@ -91,18 +105,18 @@
 			imagecopyresampled($this->new_temp_photo, $this->temp_photo, 0, 0, $cut_x, $cut_y, $new_w, $new_h, $cut_size_w, $cut_size_h);
 		}
 		
-		public function save_photo($target, $file_type){
-			if($file_type == "jpg"){
+		public function save_photo($target){
+			if($this->file_type == "jpg"){
 				if(imagejpeg($this->new_temp_photo, $target, 95) == false){
 					$this->error = "Pildifaili salvestamine ebaõnnestus!";
 				}
 			}
-			if($file_type == "png"){
+			if($this->file_type == "png"){
 				if(imagepng($this->new_temp_photo, $target, 6) == false){
 					$this->error = "Pildifaili salvestamine ebaõnnestus!";
 				}
 			}
-			if($file_type == "gif"){
+			if($this->file_type == "gif"){
 				if(imagegif($this->new_temp_photo, $target) == false){
 					$this->error = "Pildifaili salvestamine ebaõnnestus!";
 				}

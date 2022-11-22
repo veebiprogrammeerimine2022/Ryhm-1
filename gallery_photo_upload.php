@@ -20,7 +20,7 @@
 	//kontrollin pildi valikut
 	$file_type = null;
 	$photo_error = null;
-	$file_name = null;
+	//$file_name = null;
 	$alt = null;
 	$privacy = 1;
 	
@@ -29,61 +29,40 @@
 			$alt = test_input($_POST["alt_input"]);
 			$privacy = filter_var($_POST["privacy_input"], FILTER_VALIDATE_INT);
 			
-			//var_dump($_POST);
-			//var_dump($_FILES["photo_input"]);
-			//kas on üldse pildifail ja mis tüüpi
 			if(isset($_FILES["photo_input"]["tmp_name"]) and !empty($_FILES["photo_input"]["tmp_name"])){
-				$file_type = check_file_type($_FILES["photo_input"]["tmp_name"]);
-				if($file_type == 0){
-					$photo_error = "Valitud fail pole sobivat tüüpi!";
-				}
-			} else {
-				$photo_error = "Pildifail on valimata!";
-			}
-			
-			//faili suurus
-			if(empty($photo_error)){
-				if($_FILES["photo_input"]["size"] > $photo_file_size_limit){
-					$photo_error = "Valitud fail on liiga suur!";
-				}
-			}
-			
-			if(empty($photo_error)){
-				
-				//loon uue failinime
-				$file_name = create_filename($photo_name_prefix, $file_type);
-				
-				//klass
 				$upload = new Photoupload($_FILES["photo_input"]);
-				
-				//teen (väiksema) normaalmõõdus pildi
-				$upload->resize_photo($normal_photo_max_w, $normal_photo_max_h);
-				//salvestan väiksemaks tehtud pildi
-				$upload->save_photo($gallery_photo_normal_folder .$file_name, $upload->file_type);
+				if(empty($upload->error)){
+					$upload->check_file_size($photo_file_size_limit);
+				}
+				if(empty($upload->error)){
+					$upload->create_filename($photo_name_prefix);
+				}
+				if(empty($upload->error)){
+					$upload->resize_photo($normal_photo_max_w, $normal_photo_max_h);
+					$upload->save_photo($gallery_photo_normal_folder .$upload->file_name);
+				}
 				if(empty($upload->error)){
 					$upload->resize_photo($thumbnail_photo_w, $thumbnail_photo_h, false);
-					$upload->save_photo($gallery_photo_thumbnail_folder .$file_name, $upload->file_type);
-				}
-				//tõstan ajutise pildifaili oma soovitud kohta
-				//move_uploaded_file($_FILES["photo_input"]["tmp_name"], "photo_upload_original/" .$_FILES["photo_input"]["name"]);
-				if(empty($upload->error)){
-					// ajutine fail: $_FILES["photo_input"]["tmp_name"]
-					$upload->move_original_photo($gallery_photo_original_folder .$file_name);
+					$upload->save_photo($gallery_photo_thumbnail_folder .$upload->file_name);
 				}
 				if(empty($upload->error)){
-					$photo_error = store_photo_data($file_name, $alt, $privacy);
+					$upload->move_original_photo($gallery_photo_original_folder .$upload->file_name);
 				}
-				if(empty($photo_error)){
+				if(empty($upload->error)){
+					$photo_error = store_photo_data($upload->file_name, $alt, $privacy);
+				}
+				if(empty($photo_error) and empty($upload->error)){
 					$photo_error = "Pilt edukalt üles laetud!";
 					$alt = null;
 					$privacy = 1;
 				} else {
-					$photo_error = "Pildi üleslaadimisel tekkis tõrkeid!";
+					$photo_error .= $upload->error;
 				}
-				
 				unset($upload);
-				
-			}//if empty error
+			} else {
+				$photo_error = "Pildifail on valimata!";
+			}
+			
 		}//if photo_submit
 	}//if POST
 	
