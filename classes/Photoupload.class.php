@@ -105,6 +105,16 @@
 			imagecopyresampled($this->new_temp_photo, $this->temp_photo, 0, 0, $cut_x, $cut_y, $new_w, $new_h, $cut_size_w, $cut_size_h);
 		}
 		
+		public function add_watermark($watermark_file){
+			$watermark = imagecreatefrompng($watermark_file);
+			$wm_w = imagesx($watermark);
+			$wm_h = imagesy($watermark);
+			$wm_x = imagesx($this->new_temp_photo) - $wm_w - 10;
+			$wm_y = imagesy($this->new_temp_photo) - $wm_h - 10;
+			imagecopy($this->new_temp_photo, $watermark, $wm_x, $wm_y, 0, 0, $wm_w, $wm_h);
+			imagedestroy($watermark);
+		}
+		
 		public function save_photo($target){
 			if($this->file_type == "jpg"){
 				if(imagejpeg($this->new_temp_photo, $target, 95) == false){

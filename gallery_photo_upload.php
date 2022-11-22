@@ -23,6 +23,7 @@
 	//$file_name = null;
 	$alt = null;
 	$privacy = 1;
+	$watermark = "pics/vp_logo_w100_overlay.png";
 	
 	if($_SERVER["REQUEST_METHOD"] == "POST"){
 		if(isset($_POST["photo_submit"])){
@@ -39,6 +40,8 @@
 				}
 				if(empty($upload->error)){
 					$upload->resize_photo($normal_photo_max_w, $normal_photo_max_h);
+					//lisan vesimärgi
+					$upload->add_watermark($watermark);
 					$upload->save_photo($gallery_photo_normal_folder .$upload->file_name);
 				}
 				if(empty($upload->error)){
