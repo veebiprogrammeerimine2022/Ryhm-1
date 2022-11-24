@@ -1,0 +1,14 @@
+Seekord on koduse ülesandena vaja:
+1) Lisada kasutaja profiilipiltide üleslaadimine.
+Selleks looge profiili lehele vorm fotode üleslaadimiseks (see vorm peaks tegelema ainult fotoga, alt teksti ja privaatsust pole vaja).
+Looge ise andmetabel (näiteks nimega vp_userprofilephotos), milles peab olema id, foto failinimi, lisamise aeg ja tavapäraselt ka kustutamise märke väli (deleted). Alt-teksti pole vaja, sest veebilehtedel võiksime sellena alati näidata teksti "Eesnimi Perekonnanimi profiilipilt".
+Kuidas seote kasutajaga, see on Teie enda otsustada:
+				a) profiilipiltide andmetabelis on ka väli userid, milles hoiate pildi omaniku id väärtust
+				b) tekitate seostetabeli, kus on kirjas, mis id-ga pilt on mis id-ga kasutaja omaniku
+Luua tuleb ka kataloog piltide üleslaadimiseks (näiteks photo_upload_profile). Ärge unustage selle kataloogi õiguseid (päriselu mõistes väga koledaks) sättida.
+Piltide üleslaadimisel kasutage meie Photoupload klassi.
+Pldid peaks tegema suurusega 300X300 pikslit.
+Kes soovib, teeb ka "pisipildid" ehk 100X100 (aga neile siis veel ka eraldi kataloog).
+Andmebaasiga toimetades tuleb kõigepealt õnnestunud üleslaadimise järel salvestada pildi andmed andmetabelisse. Kohe pärast execute() käsku saame mingile muutujale anda just talletatud info id (andmetabelist), selleks on $conn->insert_id
+Seejärel tuleb muuta (või siis vajadusel alles esimest korda salvestada) kasutaja profiil, salvestades foto väljale just üleslaetud foto id.
+Profiilipilti tuleks näidata profiili lehel ja ka home lehel.
