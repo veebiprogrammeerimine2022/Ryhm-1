@@ -1,0 +1,126 @@
+let photoDir = "photo_upload_normal/";
+
+window.onload = function(){
+	//kõik pisipildid paneme dialoogiakent avama
+	let allThumbs = document.querySelector(".gallery").querySelectorAll(".thumbs");
+	for(let i = 0; i < allThumbs.length; i ++){
+		allThumbs[i].addEventListener("click", openModal);
+	}
+	document.querySelector("#modalclose").addEventListener("click", closeModal);
+	document.querySelector("#modalimage").addEventListener("click", closeModal);
+}
+
+function openModal(e){
+	document.querySelector("#modalimage").src = photoDir + e.target.dataset.filename;
+	document.querySelector("#modalcaption").innerHTML = e.target.alt;
+	document.querySelector("#modal").showModal();
+}
+
+function closeModal(){
+	document.querySelector("#modal").close();
+}
+
+_____________________________________________________________________________________________________
+	photoId = e.target.dataset.id;
+	for(let i = 1; i < 6; i ++){
+		document.querySelector("#rate" + i).checked = false;
+	}
+	
+	
+	
+
+
+function storeRating(){
+	console.log("Hindame");
+	let rating = 0;
+	for(let i = 1; i < 6; i ++){
+		if(document.querySelector("#rate" + i).checked){
+			rating = i;
+		}
+		console.log(rating);
+	}
+	if(rating > 0){
+		//salvestame
+		//saadame info serverisse PHP skriptile, mis salvestab ja tagastab kliendile värskendatud keskmise hinde
+		//AJAX
+		//Asynchroneus Javascript And XML
+		let webRequest = new XMLHttpRequest();
+		//oleme valmis eduks ja kui asjad toimivad, siis jälgime, kas õnnestus
+		webRequest.onreadystatechange = function(){
+			if(this.readyState == 4 && this.status == 200){
+				//kõik, mida teha, kui tuli vastus
+				document.querySelector("#avgrating").innerHTML = this.responseText;
+				document.querySelector("#storeRating").removeEventListener("click", storeRating);
+			}
+		};
+		//paneme tööle
+		//    store_photorating.php?photo=33&rating=4
+		webRequest.open("GET", "store_photorating.php?photo=" + photoId + "&rating=" + rating, true);
+		webRequest.send();
+		
+	}//if rating > 0 lõppeb
+}
+
+
+_____________________________________________________________________
+
+CREATE TABLE `if21_rinde`.`vp_photoratings` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `photoid` INT(11) NOT NULL , `userid` INT(11) NOT NULL , `rating` INT(1) NOT NULL , `added` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+				<br>
+                <input id="rate1" name="rating" type="radio" value="1"><label for="rate1">1</label>
+                <input id="rate2" name="rating" type="radio" value="2"><label for="rate2">2</label>
+                <input id="rate3" name="rating" type="radio" value="3"><label for="rate3">3</label>
+                <input id="rate4" name="rating" type="radio" value="4"><label for="rate4">4</label>
+                <input id="rate5" name="rating" type="radio" value="5"><label for="rate5">5</label>
+                <button id="storeRating" type="button">Salvesta hinne</button>
+                <br>
+                <p id="avgrating"></p>
+				
+				
+_____________________________________________________________________
+
+store_photorating.php
+
+<?php
+    //alustame sessiooni
+    
+    
+	if(isset($_GET["photo"]) and !empty($_GET["photo"])){
+		$id = filter_var($_GET["photo"], FILTER_VALIDATE_INT);
+	}
+	if(isset($_GET["rating"]) and !empty($_GET["rating"])){
+		$rating = filter_var($_GET["rating"], FILTER_VALIDATE_INT);
+	}
+	
+	$response = "Hinne teadmata!";
+	
+	if(!empty($id)){
+        require_once "../../../config_vp2022.php";
+        $conn = new mysqli($server_host, $server_user_name, $server_password, $database);
+		$conn->set_charset("utf8");
+		if(!empty($rating)){
+			$stmt = $conn->prepare("INSERT INTO vp_photoratings (photoid, userid, rating) VALUES(?, ?, ?)");
+			echo $conn->error;
+			$stmt->bind_param("iii", $id, $_SESSION["user_id"], $rating);
+			$stmt->execute();
+			$stmt->close();
+		}
+		//loeme keskmise hinde
+		$stmt = $conn->prepare("SELECT AVG(rating) as avgValue FROM vp_photoratings WHERE photoid = ?");
+		echo $conn->error;
+		$stmt->bind_param("i", $id);
+		$stmt->bind_result($score);
+		$stmt->execute();
+		if($stmt->fetch()){
+			$response = "Hinne: " .round($score, 2);
+		}
+		$stmt->close();
+		$conn->close();
+	}
+    echo $response;
+	
+	
+	
+	
+	
+	SELECT vp_photos.id, filename, alttext, vp_photos.created, firstname, lastname, AVG(rating) as AvgValue FROM vp_photos JOIN vp_users ON vp_photos.userid = vp_users.id LEFT JOIN vp_photoratings ON vp_photoratings.photoid = vp_photos.id WHERE vp_photos.privacy >= ? AND deleted IS NULL GROUP BY vp_photos.id DESC LIMIT ?,?
