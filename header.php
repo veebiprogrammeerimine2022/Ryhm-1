@@ -16,6 +16,13 @@
 				echo '<link rel="stylesheet" href="' .$style .'">' ."\n";
 			}
 		}
+		
+		if(isset($javascripts) and !empty($javascripts)){
+			//<script src="javascript.js" defer></script>
+			foreach($javascripts as $js){
+				echo '<script src="' .$js .'" defer></script>' ."\n";
+			}
+		}
 	?>
 </head>
 <body>

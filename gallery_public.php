@@ -39,6 +39,19 @@
 	<li><a href="?logout=1">Logi välja</a></li>
 	<li><a href="home.php">Avalehele</a></li>
 </ul>
+<hr>
+
+<!--Modaalaken fotode suuremalt näitamiseks-->
+<dialog id="modal" class="modalarea">
+	<span id="modalclose" class="modalclose">&times;</span>
+	<div class="modalhorizontal">
+		<div class="modalvertical">
+			<p id="modalcaption"></p>
+			<img src="pics/empty.png" alt="Galeriipilt">
+		</div>
+	</div>
+</dialog>
+
 <h2>Avalike piltide galerii</h2>
 <p>
 <?php
